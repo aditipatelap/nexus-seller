@@ -104,7 +104,7 @@ const Register = () => {
   const handleRegister = async () => {
     const data = { sellerName, email, password, phoneNumber, building, landmark, area, district, state };
     try {
-        const response = await axios.post("http://localhost:8000/seller/register", data);
+        const response = await axios.post("https://nexus-backend-380o.onrender.com/seller/register", data);
         if(response.data.status === "added") {
             alert("Thank you for registering");
             handleSellerData(response.data.user);

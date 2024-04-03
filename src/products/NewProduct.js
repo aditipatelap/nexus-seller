@@ -76,7 +76,7 @@ const NewProduct = () => {
   const handleNewProduct = async () => {
     const data = {name, description, sellerId, sellerName, brand, price, category, subCategory, discount, discountType, photo}
     try {
-      const response = await axios.post("http://localhost:8000/product/add", data);
+      const response = await axios.post("https://nexus-backend-380o.onrender.com/product/add", data);
       if (response.data.status === "data missing"){
         alert("Some data is missing. Please add all required data and try again.");
       }

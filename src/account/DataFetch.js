@@ -8,7 +8,7 @@ const DataFetch = () => {
     const { productsList, setProducts } = useContext(DataContext);
 
     const getData = async () => {
-        const response = await axios.post("http://localhost:8000/product/get", { productsList });
+        const response = await axios.post("https://nexus-backend-380o.onrender.com/product/get", { productsList });
         setProducts(response.data.products);
     }
 

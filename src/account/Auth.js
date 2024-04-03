@@ -29,7 +29,7 @@ const Auth = () => {
 
   const handleSignup = async () => {
     try {
-        const response = await axios.post("http://localhost:8000/seller/auth", { email });
+        const response = await axios.post("https://nexus-backend-380o.onrender.com/seller/auth", { email });
         if(response.data.status === "exist"){
             setEmail('');
             alert("User already exist");

@@ -46,7 +46,7 @@ const Login = () => {
 
     const handleLogin = async () => {
         try {
-            const response = await axios.post("http://localhost:8000/seller/login", {email, password} );
+            const response = await axios.post("https://nexus-backend-380o.onrender.com/seller/login", {email, password} );
             setEmail('');
             setPassword('');
             const { data } = response;

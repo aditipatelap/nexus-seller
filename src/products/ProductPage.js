@@ -16,7 +16,7 @@ const ProductPage = () => {
     if (shouldDelete) {
       navigate("/home/products");
       try {
-        const response = await axios.delete("http://localhost:8000/product/delete", { data: { id, sellerId } });
+        const response = await axios.delete("https://nexus-backend-380o.onrender.com/product/delete", { data: { id, sellerId } });
         if(response.data.status === "deleted"){
           // delete locally
           const updatedProductList = productsList.filter((productId) => String(productId) !== id);

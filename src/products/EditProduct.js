@@ -94,7 +94,7 @@ const EditProduct = () => {
     const handleUpdateProduct = async () => {
         const data = {id, name, description, brand, price, category, subCategory, discount, discountType, photo};
         try {
-            const response = await axios.put("http://localhost:8000/product/update", data);
+            const response = await axios.put("https://nexus-backend-380o.onrender.com/product/update", data);
             if (response.data.status === "data missing"){
                 alert("Some data is missing. Please add all required data and try again.");
             }

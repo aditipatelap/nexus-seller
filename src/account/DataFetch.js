@@ -14,7 +14,7 @@ const DataFetch = () => {
                 const productResponse = await axios.post("https://nexus-backend-380o.onrender.com/product/get", { productsList });
                 if (productResponse.data.status === "success") {
                     setProducts(productResponse.data.products);
-                    const orderResponse = await axios.post("http://localhost:8000/order/get", { sellerId, ordersList });
+                    const orderResponse = await axios.post("https://nexus-backend-380o.onrender.com/order/get", { sellerId, ordersList });
                     if (orderResponse.data.status === "success") {
                         setOrders(orderResponse.data.orders);
                         setDataFetched(true);

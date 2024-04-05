@@ -10,7 +10,7 @@ const OrdersList = () => {
 
     const handleProductAction = async (orderId, productId, action) => {
         try {
-            const response = await axios.put("http://localhost:8000/order/update", { orderId, productId, action });
+            const response = await axios.put("https://nexus-backend-380o.onrender.com/order/update", { orderId, productId, action });
             if(response.data.status === "updated"){
                 const updatedOrders = orders.map(order => {
                     if(order.id === orderId){

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Header from '../header/Header';
+import OrdersList from './ordersList';
 
 const Orders = () => { 
     const headerLine = "HELLO SELLER, 👨‍💼🛒";
@@ -17,7 +18,7 @@ const Orders = () => {
                 </Link>
             </div>
             <div className="px-6">
-                all orders
+                <OrdersList />
             </div>
 
         </div>

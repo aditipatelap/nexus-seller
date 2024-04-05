@@ -19,6 +19,7 @@ export const DataProvider = ({ children }) => {
     const [ordersList, setOrdersList] = useState([]);
 
     const [products, setProducts] = useState([]);
+    const [orders, setOrders] = useState([]);
     
     return (
         <DataContext.Provider value={{
@@ -35,6 +36,7 @@ export const DataProvider = ({ children }) => {
             productsList, setProductsList,
             ordersList, setOrdersList,
             products, setProducts,
+            orders, setOrders,
         }}>
             {children}
         </DataContext.Provider>

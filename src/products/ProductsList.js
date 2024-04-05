@@ -5,9 +5,7 @@ import DataContext from '../context/DataContext';
 const ProductsList = () => {
     const navigate = useNavigate();
     const { productsList, products } = useContext(DataContext);
-    console.log(productsList);
-    console.log(products);
-
+    
     const handleNewProduct = () => {
         navigate("/home/products/new")
     }

@@ -29,7 +29,7 @@ const Main = () => {
       <Header headerLine={headerLine}/>
 
       <div className="w-full">
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 border-b-2 border-gray-600">
           <div className="col-span-1 font-balsamiq-sans w-full border-r-2 border-gray-600">
             <h2 className="font-semibold text-3xl lg:text-2xl md:text-xl sm:text-lg xs:text-base px-6 py-6 sm:py-3 xs:py-3 text-center border-b-2 border-gray-600 sm:border-b-2 xs:border-b-2">YOUR ACCOUNT</h2>
             

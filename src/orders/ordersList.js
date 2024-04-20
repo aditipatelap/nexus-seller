@@ -3,14 +3,28 @@ import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import DataContext from '../context/DataContext';
 import { HiCheckCircle, HiXCircle } from "react-icons/hi";
+import { FaTruck } from "react-icons/fa";
 
 const OrdersList = () => {
-    const navigate = useNavigate();
+    const URL = process.env.REACT_APP_BACKEND_URL;
     const { orders, setOrders } = useContext(DataContext);
+
+    const formatIndianNumber = (num) => {
+        // Convert the string to a number
+        const number = parseFloat(num);
+        // Check if the conversion was successful
+        if (!isNaN(number)) {
+          // Format the number to Indian currency style
+          return number.toLocaleString('en-IN');
+        } else {
+          // Return the original input if it's not a valid number
+          return num;
+        }
+    };
 
     const handleProductAction = async (orderId, productId, action) => {
         try {
-            const response = await axios.put("https://nexus-backend-380o.onrender.com/order/update", { orderId, productId, action });
+            const response = await axios.put(`${URL}/order/update`, { orderId, productId, action });
             if(response.data.status === "updated"){
                 const updatedOrders = orders.map(order => {
                     if(order.id === orderId){
@@ -58,7 +72,7 @@ const OrdersList = () => {
                                                 {order.productNameList[index]}
                                             </li>
                                             <div className="col-span-1 text-end p-2 font-semibold content-center">
-                                                ₹ {order.amountList[index]}
+                                                <p>₹ {formatIndianNumber(order.amountList[index])}</p>
                                             </div>
                                         </div>
                                         {/* buttons */}
@@ -90,6 +104,14 @@ const OrdersList = () => {
                                                 <div className="ml-2 text-4xl text-red-500">
                                                     <HiXCircle />
                                                 </div>
+                                            </div>
+                                        }
+                                        {order.stageList[index] === "delivered" &&
+                                            <div className="my-4 flex">
+                                                <button className="bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 font-semibold text-white py-1 px-4 rounded mr-2 cursor-default">
+                                                    DELIVERED
+                                                </button>
+                                                <p className="text-3xl">🎉</p>
                                             </div>
                                         }
 

@@ -4,8 +4,10 @@ import axios from "axios";
 import { RxCrossCircled } from "react-icons/rx";
 import DataContext from '../context/DataContext';
 import Header from '../header/Header';
+import { categoryList, subCategoryList } from '../dataLists';
 
 const NewProduct = () => {
+  const URL = process.env.REACT_APP_BACKEND_URL;
   axios.defaults.maxBodyLength = 10 * 1024 * 1024; // 10 MB
   const navigate = useNavigate();
   const headerLine = "ADD YOUR PRODUCT 🛒";
@@ -14,39 +16,55 @@ const NewProduct = () => {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [brand, setBrand] = useState("");
-  const [price, setPrice] = useState();
+  const [price, setPrice] = useState("0");
   const [category, setCategory] = useState("Apparel and Fashion");
   const [subCategory, setSubCategory] = useState("Accessories");
-  const [discount, setDiscount] = useState();
+  const [discount, setDiscount] = useState("0");
   const [discountType, setDiscountType] = useState("percentage");
   const [photo, setPhoto] = useState("");
 
-  const categoryList = [
-    "Apparel and Fashion", "Electronics", "Home and Furniture", 
-    "Beauty and Personal Care", "Books and Media", "Sports and Outdoors", 
-    "Toys and Games", "Automotive", "Health and Wellness", "Jewelry and Accessories", 
-    "Pet Supplies", "Grocery and Gourmet", "Office Supplies", "Art and Craft", 
-    "Travel and Luggage", "Baby and Maternity", "Tech and Gadgets",
-  ];
+  const [ nameError, setNameError ] = useState('');
+  const [ descriptionError, setDescriptionError ] = useState('');
+  const [ brandError, setBrandError ] = useState('');
+  const [ priceError, setPriceError ] = useState('');
+  const [ discountError, setDiscountError ] = useState('');
+  const [ photoError, setPhotoError ] = useState('');
 
-  const subCategoryList = {
-    "Apparel and Fashion": ["Accessories", "Kids' Clothing", "Men's Clothing", "Shoes", "Women's Clothing"],
-    "Art and Craft": ["Art Supplies", "Craft Kits", "DIY Materials", "Home Decor"],
-    "Automotive": ["Auto Parts", "Car Accessories", "Motorcycle Gear", "Tools and Equipment"],
-    "Baby and Maternity": ["Baby Clothing", "Diapers and Wipes", "Maternity Wear", "Nursery Furniture"],
-    "Beauty and Personal Care": ["Fragrances", "Haircare", "Makeup", "Personal Care Products", "Skincare"],
-    "Books and Media": ["Books", "eBooks", "Games", "Movies", "Music"],
-    "Electronics": ["Audio Devices", "Cameras", "Laptops", "Smartphones", "Wearables"],
-    "Grocery and Gourmet": ["Food and Beverages", "Fresh Produce", "Gourmet Products", "Snacks"],
-    "Health and Wellness": ["Fitness Equipment", "Health Monitoring Devices", "Natural Remedies", "Vitamins and Supplements"],
-    "Home and Furniture": ["Appliances", "Bedding", "Furniture", "Home Decor", "Kitchenware"],
-    "Jewelry and Accessories": ["Fashion Jewelry", "Fine Jewelry", "Handbags", "Sunglasses", "Watches"],
-    "Office Supplies": ["Electronics", "Office Furniture", "Organizational Tools", "Stationery"],
-    "Pet Supplies": ["Beds and Furniture", "Pet Care Products", "Pet Food", "Toys for Pets"],
-    "Sports and Outdoors": ["Active wear", "Fitness Accessories", "Footwear", "Outdoor Gear", "Sports Equipment"],
-    "Tech and Gadgets": ["Gadgets and Gizmos", "Smart Home Devices", "Tech Accessories"],
-    "Toys and Games": ["Board Games", "Educational Toys", "Outdoor Play", "Puzzles", "Toys for Kids"],
-    "Travel and Luggage": ["Backpacks", "Luggage", "Outdoor Gear", "Travel Accessories"]
+  const handleInputChange = (id, value) => {
+    switch (id) {
+      case "name":
+        setName(value);
+        setNameError('');
+        break;
+      case "description":
+        setDescription(value);
+        setDescriptionError('');
+        break;
+      case "brand":
+        setBrand(value);
+        setBrandError('');
+        break;
+      case "price":
+        if(value === ""){
+          setPrice("0");
+        }
+        else {
+          setPrice(value);
+        }
+        setPriceError('');
+        break;
+      case "discount":
+        if(value === ""){
+          setDiscount("0");
+        }
+        else {
+          setDiscount(value);
+        }
+        setDiscountError('');
+        break;
+      default:
+        break;
+    }
   };
 
   const convertToBase64 = (e) => {
@@ -57,26 +75,61 @@ const NewProduct = () => {
         reader.readAsDataURL(file);
         reader.onload = () => {
             setPhoto(reader.result); // base64encoded string
+            setPhotoError('');
         }
         reader.onerror = (error) => {
             console.error(error);
         }
-    } 
+    }
     else {
         alert('Please select an image smaller than 1 MB.');
         // Clear the input value to allow the user to select another file
         e.target.value = null;
+        setPhotoError('required*');
     }
   }
 
   const removePhoto = () => {
     setPhoto("");
+    setPhotoError('required*');
   }
 
   const handleNewProduct = async () => {
+    
+    // validate
+    if (name.length === 0) {
+      setNameError('required*');
+      return;
+    }
+    if (description.length === 0) {
+      setDescriptionError('required*');
+      return;
+    }
+    if (brand.length === 0) {
+      setBrandError('required*');
+      return;
+    }
+    if (price === "0") {
+      setPriceError('more than 0');
+      return;
+    }
+    if (price.length === 0) {
+      setPriceError('required*');
+      return;
+    }
+    if (discount.length === 0) {
+      setDescriptionError('required*');
+      return;
+    }
+    if(photo.length === 0){
+      setPhotoError('required*');
+      return;
+    }
+
     const data = {name, description, sellerId, sellerName, brand, price, category, subCategory, discount, discountType, photo}
+
     try {
-      const response = await axios.post("https://nexus-backend-380o.onrender.com/product/add", data);
+      const response = await axios.post(`${URL}/product/add`, data);
       if (response.data.status === "data missing"){
         alert("Some data is missing. Please add all required data and try again.");
       }
@@ -112,59 +165,55 @@ const NewProduct = () => {
         <div className="px-6 mt-6 font-poppins">
           {/* name  */}
           <div className="flex flex-col mb-4">
-            <label htmlFor="name" className="mb-2 font-semibold">Product Name:</label>
+            <div className="flex items-end mb-2">
+              <label htmlFor="name" className="font-semibold">Product Name:</label>
+              {nameError !== "" && <p className="ml-1 text-red-500 text-sm">{nameError}</p> }
+            </div>
             <input 
               id="name"
               type="text" 
               required
+              maxLength={200}
               value={name}
-              onChange={(e) => setName(e.target.value)}
+              onChange={(e) => handleInputChange("name", e.target.value)}
               className="border border-black rounded-md p-3 min-h-5"
               />
           </div>
 
           {/* description */}
           <div className="flex flex-col mb-4">
-            <label htmlFor="description" className="mb-2 font-semibold">Description:</label>
+            <div className="flex items-end mb-2">
+              <label htmlFor="description" className="font-semibold">Description:</label>
+              {descriptionError !== "" && <p className="ml-1 text-red-500 text-sm">{descriptionError}</p> }
+            </div>
             <textarea 
               id="description"
               required
               value={description}
-              onChange={(e) => setDescription(e.target.value)}
+              onChange={(e) => handleInputChange("description", e.target.value)}
               className="border border-black rounded-md p-3 min-h-96 resize-none"
             ></textarea>
           </div>
 
-          {/* brand and price */}
-          <div className="grid grid-cols-2 sm:grid-cols-1 xs:grid-cols-1 mb-4">
-            {/* brand */}
-            <div className="flex flex-col pr-2 sm:pr-0 xs:pr-0">
-              <label htmlFor="brand" className="mb-2 font-semibold">Brand:</label>
-              <input 
-                id="brand"
-                type="text"
-                required
-                value={brand}
-                onChange={(e) => setBrand(e.target.value)}
-                className="border border-black rounded-md p-2"
-              />
+          {/* brand */}
+          <div className="flex flex-col pr-2 sm:pr-0 xs:pr-0 mb-4">
+            <div className="flex items-end mb-2">
+              <label htmlFor="brand" className="font-semibold">Brand:</label>
+              {brandError !== "" && <p className="ml-1 text-red-500 text-sm">{brandError}</p> }
             </div>
-            {/* price */}
-            <div className="flex flex-col pl-2 sm:pl-0 xs:pl-0">
-              <label htmlFor="price" className="mb-2 font-semibold">Price (₹):</label>
-              <input 
-                id="price"
-                type="number"
-                required
-                value={price}
-                onChange={(e) => setPrice(e.target.value)}
-                className="border border-black rounded-md p-2"
-              />
-            </div>
+            <input 
+              id="brand"
+              type="text"
+              required
+              maxLength={100}
+              value={brand}
+              onChange={(e) => handleInputChange("brand", e.target.value)}
+              className="border border-black rounded-md p-2"
+            />
           </div>
 
           {/* category and sub category */}
-          <div className="grid grid-cols-2 sm:grid-cols-1 xs:grid-cols-1 mb-4">
+          <div className="grid grid-cols-2 sm:grid-cols-1 xs:grid-cols-1 mb-4 sm:space-y-4 xs:space-y-4">
             {/* category */}
             <div className="flex flex-col pr-2 sm:pr-0 xs:pr-0">
               <label htmlFor="category" className="mb-2 font-semibold">Category:</label>
@@ -203,10 +252,28 @@ const NewProduct = () => {
           </div>
 
           {/* discount & type */}
-          <div className="grid grid-cols-2 sm:grid-cols-1 xs:grid-cols-1 mb-4">
+          <div className="grid grid-cols-3 sm:grid-cols-1 xs:grid-cols-1 mb-4 sm:space-y-4 xs:space-y-4 space-x-4 sm:space-x-0 xs:space-x-0">
+            {/* price */}
+            <div className="flex flex-col sm:pr-0 xs:pr-0">
+              <div className="flex items-end mb-2">
+                <label htmlFor="price" className="font-semibold text-nowrap">Price (₹):</label>
+                {priceError !== '' && <p className="ml-1 text-red-500 text-sm">{priceError}</p> }
+              </div>
+              <input 
+                id="price"
+                type="number"
+                required
+                value={price}
+                onChange={(e) => handleInputChange("price", e.target.value)}
+                className="border border-black rounded-md p-2"
+              />
+            </div>
             {/* discount */}
-            <div className="flex flex-col pr-2 sm:pr-0 xs:pr-0">
-              <label htmlFor="discount" className="mb-2 font-semibold">Discount (%):</label>
+            <div className="flex flex-col sm:pr-0 xs:pr-0">
+              <div className="flex items-end mb-2">
+                <label htmlFor="discount" className="font-semibold text-nowrap">Discount (%):</label>
+                {discountError !== '' && <p className="ml-1 text-red-500 text-sm">{discountError}</p> }
+              </div>
               <input 
                 id="discount"
                 type="number"
@@ -214,29 +281,40 @@ const NewProduct = () => {
                 max="100"
                 required
                 value={discount}
-                onChange={(e) => setDiscount(e.target.value)}
+                onChange={(e) => handleInputChange("discount", e.target.value)}
                 className="border border-black rounded-md p-2"
               />
             </div>
-            {/* discount type */}
-            <div className="flex flex-col pl-2 sm:pl-0 xs:pl-0">
-              <label htmlFor="distype" className="mb-2 font-semibold">Discount Type:</label>
-              <select
-                id="distype"
-                value={discountType}
-                required
-                className="border border-black rounded-md p-2"
-                onChange={(e) => setDiscountType(e.target.value)}
-              >
-                <option key="percentage" value="percentage">Percentage (%)</option>
-                {/* <option key="amount" value="amount">Amount (₹)</option> */}
-              </select>
+            {/* final price */}
+            <div className="flex flex-col sm:pl-0 xs:pl-0">
+              <label htmlFor="discount" className="mb-2 font-semibold">Final Price (₹):</label>
+              <p className="h-full sm:h-10 xs:h-10 border border-black rounded-md p-2">
+                {discount === "0" ? price : price - (price * discount / 100)}
+              </p>
             </div>
+          </div>
+
+          {/* discount type - hidden */}
+          <div className="flex flex-col pl-2 sm:pl-0 xs:pl-0 hidden">
+            <label htmlFor="distype" className="mb-2 font-semibold">Discount Type:</label>
+            <select
+              id="distype"
+              value={discountType}
+              required
+              className="border border-black rounded-md p-2"
+              onChange={(e) => setDiscountType(e.target.value)}
+            >
+              <option key="percentage" value="percentage">Percentage (%)</option>
+              {/* <option key="amount" value="amount">Amount (₹)</option> */}
+            </select>
           </div>
 
           {/* photo */}
           <div className="flex flex-col">
-            <label htmlFor="photo" className="mb-2 font-semibold">Photo:</label>
+            <div className="flex items-end mb-2">
+              <label htmlFor="photo" className="font-semibold">Photo:</label>
+              {photoError !== "" && <p className="ml-1 text-red-500 text-sm">{photoError}</p> }
+            </div>
             <div className="relative">
               <div className="flex items-end">
                 <label htmlFor="fileInput" className="cursor-pointer border border-black bg-gray-200 rounded-sm p-1  text-sm">Choose Image*</label>

@@ -5,6 +5,7 @@ import DataContext from '../context/DataContext';
 import Header from '../header/Header';
 
 const ProductPage = () => {
+  const URL = process.env.REACT_APP_BACKEND_URL;
   const headerLine = "YOUR PRODUCT 🛒";
   const navigate = useNavigate();
   const { id } = useParams();
@@ -16,7 +17,7 @@ const ProductPage = () => {
     if (shouldDelete) {
       navigate("/home/products");
       try {
-        const response = await axios.delete("https://nexus-backend-380o.onrender.com/product/delete", { data: { id, sellerId } });
+        const response = await axios.delete(`${URL}/product/delete`, { data: { id, sellerId } });
         if(response.data.status === "deleted"){
           // delete locally
           const updatedProductList = productsList.filter((productId) => String(productId) !== id);
@@ -68,23 +69,12 @@ const ProductPage = () => {
           </ul>
         </div>
 
-        {/* brand and price */}
-        <div className="grid grid-cols-2 sm:grid-cols-1 xs:grid-cols-1 mb-4">
-          {/* brand */}
-          <div className="flex flex-col pr-2 sm:pr-0 xs:pr-0">
-            <label htmlFor="brand" className="mb-2 font-semibold">Brand:</label>
-            <p className="border border-black rounded-md p-2">
-              {product.brand}
-            </p>
-          </div>
-
-          {/* price */}
-          <div className="flex flex-col pl-2 sm:pl-0 xs:pl-0">
-            <label htmlFor="price" className="mb-2 font-semibold">Price (₹):</label>
-            <p className="border border-black rounded-md p-2">
-              {product.price}
-            </p>
-          </div>
+        {/* brand */}
+        <div className="flex flex-col pr-2 sm:pr-0 xs:pr-0 mb-4">
+          <label htmlFor="brand" className="mb-2 font-semibold">Brand:</label>
+          <p className="border border-black rounded-md p-2">
+            {product.brand}
+          </p>
         </div>
 
         {/* category and sub category */}
@@ -107,22 +97,36 @@ const ProductPage = () => {
         </div>
 
         {/* discount & type */}
-        <div className="grid grid-cols-2 sm:grid-cols-1 xs:grid-cols-1 mb-4">
+        <div className="grid grid-cols-3 sm:grid-cols-1 xs:grid-cols-1 mb-4 sm:space-y-4 xs:space-y-4 space-x-4 sm:space-x-0 xs:space-x-0">
+          {/* price */}
+          <div className="flex flex-col sm:pl-0 xs:pl-0">
+            <label htmlFor="price" className="mb-2 font-semibold">Price (₹):</label>
+            <p className="border border-black rounded-md p-2">
+              {product.price}
+            </p>
+          </div>
           {/* discount */}
-          <div className="flex flex-col pr-2 sm:pr-0 xs:pr-0">
+          <div className="flex flex-col sm:pr-0 xs:pr-0">
             <label htmlFor="discount" className="mb-2 font-semibold">Discount (%):</label>
             <p className="border border-black rounded-md p-2">
               {product.discount}
             </p>
           </div>
-
-          {/* discount type */}
-          <div className="flex flex-col pl-2 sm:pl-0 xs:pl-0">
-            <label htmlFor="distype" className="mb-2 font-semibold">Discount Type:</label>
-            <p className="border border-black rounded-md p-2">
-              {product.discountType}
+          {/* final price */}
+          <div className="flex flex-col sm:pl-0 xs:pl-0">
+            <label htmlFor="discount" className="mb-2 font-semibold">Final Price (₹):</label>
+            <p className="h-full sm:h-10 xs:h-10 border border-black rounded-md p-2">
+              {product.discount === "0" ? product.price : product.price - (product.price * product.discount / 100)}
             </p>
           </div>
+        </div>
+
+        {/* discount type - hidden*/}
+        <div className="flex flex-col pl-2 sm:pl-0 xs:pl-0 hidden">
+          <label htmlFor="distype" className="mb-2 font-semibold">Discount Type:</label>
+          <p className="border border-black rounded-md p-2">
+            {product.discountType}
+          </p>
         </div>
 
         {/* photo */}

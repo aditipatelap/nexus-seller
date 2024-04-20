@@ -4,6 +4,7 @@ import axios from 'axios';
 import DataContext from '../context/DataContext';
 
 const DataFetch = () => {
+    const URL = process.env.REACT_APP_BACKEND_URL;
     const navigate = useNavigate();
     const { sellerId, productsList, setProducts, ordersList, setOrders } = useContext(DataContext);
     const [dataFetched, setDataFetched] = useState(false);
@@ -11,10 +12,10 @@ const DataFetch = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const productResponse = await axios.post("https://nexus-backend-380o.onrender.com/product/get", { productsList });
+                const productResponse = await axios.post(`${URL}/product/get`, { productsList });
                 if (productResponse.data.status === "success") {
                     setProducts(productResponse.data.products);
-                    const orderResponse = await axios.post("https://nexus-backend-380o.onrender.com/order/get", { sellerId, ordersList });
+                    const orderResponse = await axios.post(`${URL}/order/get`, { sellerId, ordersList });
                     if (orderResponse.data.status === "success") {
                         setOrders(orderResponse.data.orders);
                         setDataFetched(true);

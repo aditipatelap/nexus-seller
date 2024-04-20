@@ -4,6 +4,7 @@ import axios from "axios";
 import DataContext from '../context/DataContext';
 
 const Delete = () => {
+  const URL = process.env.REACT_APP_BACKEND_URL;
   const [ textInput, setTextInput ]  = useState("");
   const navigate = useNavigate();
   const { email } = useContext(DataContext);
@@ -11,7 +12,7 @@ const Delete = () => {
   const handleDelete = async () => {
     if (textInput === "DELETE") {
       try {
-        const response = await axios.delete("https://nexus-backend-380o.onrender.com/seller/delete", { data: { email } });
+        const response = await axios.delete(`${URL}/seller/delete`, { data: { email } });
         if (response.data.status === "deleted") {
           alert("Your Account has been deleted");
           navigate("/");
@@ -47,11 +48,12 @@ const Delete = () => {
             onChange={(e) => setTextInput(e.target.value) }
           />
           <button 
-              type="submit"
-              className="font-balsamiq-sans mt-8 px-20 py-3 md:px-14 md:py-2 sm:px-14 sm:py-2 xs:px-14 xs:py-2 w-fit rounded-lg shadow-md bg-[#E23232] text-white text-2xl md:text-xl sm:text-xl xs:text-xl"
-              onClick={() => handleDelete()}
+            type="submit"
+            className="font-balsamiq-sans mt-8 px-20 py-3 md:px-14 md:py-2 sm:px-14 sm:py-2 xs:px-14 xs:py-2 w-fit rounded-lg shadow-md text-2xl md:text-xl sm:text-xl xs:text-xl border border-[#E23232]"
+            onClick={() => handleDelete()}
+            style={{ backgroundColor: textInput === "DELETE" ? '#E23232' : '#FFFFFF', color: textInput === "DELETE" ? 'white' : 'black' }}
           >
-              DELETE
+            DELETE
           </button>
         </div>
       </form>

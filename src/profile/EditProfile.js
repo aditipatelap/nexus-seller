@@ -161,8 +161,6 @@ const EditProfile = ({ handleEditClick }) => {
         }
 
         const data = { sellerName, email, password, phoneNumber, building, landmark, area, district, state };
-        console.log(data);
-        return;
         
         try {  
             const response = await axios.put(`${URL}/seller/update/profile`, data);
